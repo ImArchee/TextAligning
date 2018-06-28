@@ -2,21 +2,22 @@ import javax.swing.*;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.awt.font.*;
-import java.awt.geom.*;
-import java.awt.print.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.text.AttributedString;
+import java.util.ArrayList;
 
 public class Aligning extends JFrame implements ActionListener {
     JPanel mainPanel;
     JTextField getText;
     String fileName;
     String sentence;
-
+    Rectangle r = new Rectangle().getBounds();
+    double h = r.height;
+    double w = r.width;
     int DEFAULT_WIDTH = 640;
     int DEFAULT_HEIGHT = 640;
 
@@ -56,24 +57,39 @@ public class Aligning extends JFrame implements ActionListener {
         }
         public void paintComponent(Graphics g) {
             Graphics2D g2 = (Graphics2D) g;
-            FontRenderContext fContext = g2.getFontRenderContext();
             g2.setFont(new Font("Arial", Font.PLAIN, 14));
-            Font f = g2.getFont();
             //Rectangle2D bounds = f.getStringBounds(sent, fContext);
+            ArrayList<Integer> positions=new ArrayList<>();
+            for(int i=0;i<sent.length();i++) {
+                if(sent.charAt(i)==' ')
+                    positions.add(i-1);
+            }
+            for(Integer k:positions){
+                System.out.println("GÓWNO "+k);
+            }
+
+
             String[] parts = sent.split(" ");
+            //policz pozycje spacji
+
             int numberOfWords = parts.length;
             int result = 0;
-            int x = 0;
-            int y = 10;
+            int x = 10;
+            int y = 20;
             for (int i = 0; i < numberOfWords - 1; i++) {
-                if (result < DEFAULT_WIDTH - 30) {
+                if (result < DEFAULT_WIDTH - 40) {
+                    // TODO: 28.06.2018 this statement helps to fit the text in the frame; i'll maybe do set it to dynamically change when window size changes
                     g2.drawString(parts[i], x, y);
                     result += g2.getFontMetrics().stringWidth(parts[i] + g2.getFontMetrics().charWidth(' '));
                     x += g2.getFontMetrics().stringWidth(parts[i]) + g2.getFontMetrics().charWidth(' ');
                     System.out.println(result);
                 } else {
+                    // TODO: 28.06.2018 Find a way of how to justify the text 
+                    /*while(result!=DEFAULT_WIDTH-40){
+                                j++;
+                    }*/
                     result = 0;
-                    x = 0;
+                    x = 10;
                     y += g2.getFontMetrics().getHeight();
                 }
             }
