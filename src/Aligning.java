@@ -58,24 +58,25 @@ public class Aligning extends JFrame implements ActionListener {
         public void paintComponent(Graphics g) {
             Graphics2D g2 = (Graphics2D) g;
             g2.setFont(new Font("Arial", Font.PLAIN, 14));
-            //Rectangle2D bounds = f.getStringBounds(sent, fContext);
             ArrayList<Integer> positions=new ArrayList<>();
+
             for(int i=0;i<sent.length();i++) {
                 if(sent.charAt(i)==' ')
-                    positions.add(i-1);
+                    positions.add(i+1);
             }
             for(Integer k:positions){
-                System.out.println("GÓWNO "+k);
+                System.out.println("Position of space: "+k);
             }
 
-
             String[] parts = sent.split(" ");
-            //policz pozycje spacji
 
             int numberOfWords = parts.length;
             int result = 0;
             int x = 10;
             int y = 20;
+            int spaceNumber=positions.get(0);
+            int j=1;
+            StringBuilder sb = new StringBuilder(sent);
             for (int i = 0; i < numberOfWords - 1; i++) {
                 if (result < DEFAULT_WIDTH - 40) {
                     // TODO: 28.06.2018 this statement helps to fit the text in the frame; i'll maybe do set it to dynamically change when window size changes
@@ -84,13 +85,23 @@ public class Aligning extends JFrame implements ActionListener {
                     x += g2.getFontMetrics().stringWidth(parts[i]) + g2.getFontMetrics().charWidth(' ');
                     System.out.println(result);
                 } else {
-                    // TODO: 28.06.2018 Find a way of how to justify the text 
-                    /*while(result!=DEFAULT_WIDTH-40){
-                                j++;
-                    }*/
+                    // TODO: 28.06.2018 Find out how to justify the text
+                    while(result>re) {//result!=DEFAULT_WIDTH-40
+                        System.out.println("Result: " + result);
+                        if (j > 10)
+                            break;
+                        sb.insert(spaceNumber, "  ");
+                        spaceNumber = positions.get(j - 1);
+                        j++;
+
+                    }
+                    while(result!=DEFAULT_WIDTH-40) {
+                        x+=g2.getFontMetrics().stringWidth((parts[i]+g2.getFontMetrics().charWidth(' ')));
+                    }
                     result = 0;
-                    x = 10;
                     y += g2.getFontMetrics().getHeight();
+                    x = 10;
+
                 }
             }
         }
